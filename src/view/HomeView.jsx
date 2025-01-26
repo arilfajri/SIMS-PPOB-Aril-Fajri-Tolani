@@ -5,85 +5,79 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import Navbar from "../component/Navbar";
 import ProfileCard from "../component/ProfileCard";
+import {
+  bannerSelector,
+  servicesSelector,
+} from "../config/redux/information/informationSelector";
+import { useDispatch } from "react-redux";
+import { banner, services } from "../config/redux/information/informationThunk";
+import { Link } from "react-router-dom";
 
 const HomeView = () => {
-  const [userProfile, setUserProfile] = useState({});
-  const [balance, setBalance] = useState("Rp ******");
-  const [services, setServices] = useState([]);
-  const [banners, setBanners] = useState([]);
-
-  //   useEffect(() => {
-  //     // Fetch user profile
-  //     fetch("/profile")
-  //       .then((res) => res.json())
-  //       .then((data) => setUserProfile(data));
-
-  //     // Fetch balance
-  //     fetch("/balance")
-  //       .then((res) => res.json())
-  //       .then((data) => setBalance(`Rp ${data.balance}`));
-
-  //     // Fetch services
-  //     fetch("/services")
-  //       .then((res) => res.json())
-  //       .then((data) => setServices(data));
-
-  //     // Fetch banners
-  //     fetch("/banner")
-  //       .then((res) => res.json())
-  //       .then((data) => setBanners(data));
-  //   }, []);
-
+  const dispatch = useDispatch();
+  const banners = bannerSelector();
+  const allservices = servicesSelector();
+  useEffect(() => {
+    dispatch(banner());
+    dispatch(services());
+  }, []);
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="px-28 py-8">
+      <div className="px-8 md:px-10 lg:px-15 py-8">
         <ProfileCard />
-        {/* Services */}
-        <div className="mb-8">
-          <div className="grid grid-cols-4 gap-4">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded-md shadow hover:shadow-md text-center"
-              >
-                <img
-                  src={service.icon}
-                  alt={service.name}
-                  className="w-10 h-10 mx-auto mb-2"
-                />
-                <p className="text-sm font-medium">{service.name}</p>
+        <div className="py-10">
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-12 md:gap-4 md:grid-cols-4">
+            {allservices?.map((service, index) => (
+              <div key={index} className="text-center">
+                <Link to="/home/payment" state={service}>
+                  <img
+                    src={service?.service_icon}
+                    alt={service?.service_name}
+                    className="w-14 h-14 mx-auto mb-2"
+                  />
+                  <p className="text-xs">{service?.service_name}</p>
+                </Link>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Promo Slider */}
-        <div>
-          <h2 className="text-lg font-medium mb-4">Temukan promo menarik</h2>
+        <div className=" py-5">
+          <h2 className="text-base font-semibold mb-4">
+            Temukan promo menarik
+          </h2>
           <Swiper
-            slidesPerView={2}
-            spaceBetween={16}
-            pagination={{
-              clickable: true,
+            // slidesPerView={4}
+            // spaceBetween={25}
+            // pagination={{
+            //   clickable: true,
+            // }}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 3,
+                spaceBetween: 25,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 25,
+              },
             }}
             modules={[Pagination]}
             className="mySwiper"
           >
-            {banners.map((banner, index) => (
+            {banners?.map((banner, index) => (
               <SwiperSlide key={index}>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <img
-                    src={banner.image}
-                    alt={banner.title}
-                    className="w-full h-40 object-cover"
+                    src={banner.banner_image}
+                    alt={banner.banner_name}
+                    className="w-full h-28 object-cover"
                   />
-                  <div className="p-4">
-                    <h3 className="font-medium text-base">{banner.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      {banner.description}
-                    </p>
-                  </div>
                 </div>
               </SwiperSlide>
             ))}

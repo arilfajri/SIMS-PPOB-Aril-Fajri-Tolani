@@ -29,7 +29,7 @@ const MembershipSlice = createSlice({
         type: "",
       };
     },
-    reset: (state) => membershipInitState,
+    resetMembership: (state) => membershipInitState,
   },
   extraReducers: (builder) => {
     builder
@@ -110,63 +110,11 @@ const MembershipSlice = createSlice({
           profileError: action.payload,
           type: action.type,
         };
-      })
-      // update profile
-      .addCase(updateProfile.pending, (state, action) => {
-        return {
-          ...state,
-          updateProfileLoading: true,
-          updateProfileError: undefined,
-          type: action.type,
-        };
-      })
-      .addCase(updateProfile.fulfilled, (state, action) => {
-        return {
-          ...state,
-          data: action.payload.data,
-          updateProfileLoading: false,
-          updateProfileError: undefined,
-          type: action.type,
-        };
-      })
-      .addCase(updateProfile.rejected, (state, action) => {
-        return {
-          ...state,
-          updateProfileLoading: false,
-          updateProfileError: action.payload,
-          type: action.type,
-        };
-      })
-      // update profile img
-      .addCase(updateProfileImg.pending, (state, action) => {
-        return {
-          ...state,
-          updateProfileImgLoading: true,
-          updateProfileImgError: undefined,
-          type: action.type,
-        };
-      })
-      .addCase(updateProfileImg.fulfilled, (state, action) => {
-        return {
-          ...state,
-          token: action.payload.data,
-          updateProfileImgLoading: false,
-          updateProfileImgError: undefined,
-          type: action.type,
-        };
-      })
-      .addCase(updateProfileImg.rejected, (state, action) => {
-        return {
-          ...state,
-          updateProfileImgLoading: false,
-          updateProfileImgError: action.payload,
-          type: action.type,
-        };
       });
   },
 });
 
-export const { reset } = MembershipSlice.actions;
+export const { resetMembership } = MembershipSlice.actions;
 
 export const { actions: membershipAction, reducer: membershipReducer } =
   MembershipSlice;

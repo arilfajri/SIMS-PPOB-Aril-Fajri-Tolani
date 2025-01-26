@@ -36,36 +36,35 @@ export const login = createAsyncThunk(
 // profile
 export const profile = createAsyncThunk(
   "membership/profile",
-  async (_, { rejectWithValue }) => {
+  async (_, { getState }) => {
+    const state = getState();
     try {
       const res = await axios.get(
-        "https://take-home-test-api.nutech-integrasi.com/profile"
+        "https://take-home-test-api.nutech-integrasi.com/profile",
+        {
+          headers: { Authorization: `Bearer ${state.session.token.token}` },
+        }
       );
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return error.message;
     }
   }
 );
-
 export const updateProfile = createAsyncThunk(
   "membership/updateProfile",
-  async (
-    { id, email, first_name, last_name, profile_image },
-    { rejectWithValue }
-  ) => {
+  async ({ first_name, last_name }, { rejectWithValue }) => {
     try {
-      const res = await axios.patch(
-        `https://take-home-test-api.nutech-integrasi.com/profile/update/${id}`,
+      const res = await axios.put(
+        `https://take-home-test-api.nutech-integrasi.com/profile/update`,
         {
-          email,
           first_name,
           last_name,
-          profile_image,
         },
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${state.session.token.token}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -78,28 +77,27 @@ export const updateProfile = createAsyncThunk(
 
 export const updateProfileImg = createAsyncThunk(
   "membership/updateProfileImg",
-  async (
-    { id, email, first_name, last_name, profile_image },
-    { rejectWithValue }
-  ) => {
+  async ({ profile_image }, { rejectWithValue }) => {
     try {
-      const res = await axios.patch(
-        `https://take-home-test-api.nutech-integrasi.com/profile/image/${id}`,
-        {
-          email,
-          first_name,
-          last_name,
-          profile_image,
-        },
+      const formData = new FormData();
+      formData.append("profile_image", profile_image);
+
+      const res = await axios.put(
+        "https://take-home-test-api.nutech-integrasi.com/profile/image",
+        formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${state.session.token.token}`,
           },
         }
       );
+
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response ? error.response.data : { message: "Terjadi kesalahan" }
+      );
     }
   }
 );

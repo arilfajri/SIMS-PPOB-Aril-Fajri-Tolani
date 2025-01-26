@@ -6,7 +6,17 @@ import reducer from "./reducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["session"],
+  whitelist: [
+    "session",
+    "banner",
+    "services",
+    "balance",
+    "topup",
+    "transaction",
+    "transactionHistory",
+    "updateProfileImg",
+    "updateProfile",
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);
